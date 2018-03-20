@@ -1,0 +1,28 @@
+.ToggleFilter {
+    display: inline-block;
+}
+
+.ToggleFilter__Item {
+    border-radius: 2px;
+    border: 1px solid #eee;
+    margin-right: 5px;
+    padding: 5px 10px;
+}
+
+.ToggleFilter__Item:last-of-type {
+    margin-right: 0;
+}
+
+.ToggleFilter__Item:hover {
+    background-color: #f7f7f7;
+    cursor: pointer;
+}
+
+.ToggleFilter__Item.--is-selected {
+    background-color: green;
+    color: #fff;
+}
+
+.ToggleFilter__Item.--is-selected:hover {
+    background-color: #6bc76b;
+}
