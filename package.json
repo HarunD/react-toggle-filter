@@ -1,8 +1,8 @@
 {
   "name": "react-toggle-filter",
-  "version": "0.0.4",
+  "version": "0.0.41",
   "description": "Simple React component for filtering items via toggles.",
-  "main": "build/ToggleFilter.js",
+  "main": "build/index.js",
   "author": "Harun Djulic <harundulic@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/HarunD/react-toggle-filter",
