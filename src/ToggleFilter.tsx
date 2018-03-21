@@ -1,3 +1,7 @@
+/*
+    TODO:
+    - possibility to send objects as ItemList, eg. [{title: 'Active', status: 0}, {title: 'Closed', status: 1}]
+*/
 import React from 'react';
 
 import './style.css';
@@ -7,23 +11,24 @@ interface FilterableItem {
     isSelected : boolean
 }
 type FilterableList = Array < FilterableItem > | null;
-type StringList = Array < string >;
+type ItemList = Array < string >;
 
 interface ToggleFilterProps {
-    className? : string;
-    items : StringList;
-    itemClassName? : string;
+    className?: string;
+    items : ItemList;
+    itemClassName?: string;
     onItemToggle : Function;
-    selected : StringList;
-    style? : object;
+    selected : ItemList;
+    style?: object;
 }
 
 interface ToggleFilterState {
     filterableItems : FilterableList;
 }
 
-export default class ToggleFilter extends React.Component<ToggleFilterProps,ToggleFilterState> {
-    public static defaultProps : Partial<ToggleFilterProps> = {
+export default class ToggleFilter extends React.Component < ToggleFilterProps,
+ToggleFilterState > {
+    public static defaultProps : Partial < ToggleFilterProps > = {
         items: [],
         selected: []
     }
@@ -35,17 +40,35 @@ export default class ToggleFilter extends React.Component<ToggleFilterProps,Togg
         };
     }
 
-    // shouldComponentUpdate*
+    componentDidUpdate(prevProps : any, prevState : any) {
+        this._fireToggle(this.state.filterableItems);
+    }
+
+    // Fire the update event
+    _fireToggle = (filterableItems : FilterableList) => {
+        let selectedItems : ItemList = [];
+
+        if (filterableItems && filterableItems.length > 0) {
+            selectedItems = filterableItems.filter((item : FilterableItem) => item.isSelected).map((item : FilterableItem) => item.title);
+        }
+
+        this
+            .props
+            .onItemToggle(selectedItems, filterableItems);
+    }
 
     // Create an object of provided filterable items
-    _getFilterableItems = (allItems : StringList, selectedItems : StringList) : FilterableList | null => {
+    _getFilterableItems = (allItems : ItemList, selectedItems : ItemList) : FilterableList | null => {
         if (!allItems || allItems.length === 0) {
             return null;
         }
 
         let filterable : Array < FilterableItem > = [];
         allItems.forEach((i : string) => {
-            filterable.push({title: i, isSelected: false});
+            filterable.push({
+                title: i,
+                isSelected: selectedItems.includes(i)
+            });
         });
 
         return filterable;
@@ -59,18 +82,7 @@ export default class ToggleFilter extends React.Component<ToggleFilterProps,Togg
         }
 
         filterableItems[index].isSelected = !item.isSelected;
-        this.setState({
-            filterableItems
-        }, () => {
-            let selectedItems : StringList = [];
-            if (filterableItems && filterableItems.length > 0) {
-                selectedItems = filterableItems.filter((item : FilterableItem) => item.isSelected).map((item : FilterableItem) => item.title);
-            }
-
-            this
-                .props
-                .onItemToggle(selectedItems, filterableItems);
-        });
+        this.setState({filterableItems});
     }
 
     render() {
@@ -80,16 +92,22 @@ export default class ToggleFilter extends React.Component<ToggleFilterProps,Togg
             return null;
         }
 
+        let {className, style, itemClassName} = this.props;
+
         return (
             <section
-                className={`ToggleFilter ${this.props.className}`}
-                style={this.props.style}>
+                className={`ToggleFilter ${className
+                ? className
+                : ''}`}
+                style={style}>
                 {filterableItems.map((item : FilterableItem, index : number) => (
                     <span
                         key={index}
-                        className={`ToggleFilter__Item ${this.props.itemClassName} ${item.isSelected
-                        ? '--is-selected'
-                        : ''}`}
+                        className={`ToggleFilter__Item ${itemClassName
+                        ? itemClassName
+                        : ''} ${item.isSelected
+                            ? '--is-selected'
+                            : ''}`}
                         onClick={() => this._toggleItem(index, item)}>{item.title}</span>
                 ))}
             </section>
