@@ -7,16 +7,17 @@ import React from 'react';
 import './style.css';
 
 interface FilterableItem {
-    title : string,
-    isSelected : boolean
+    isSelected : boolean;
+    title : string;
+    value?: string | number;
 }
 type FilterableList = Array < FilterableItem > | null;
 type ItemList = Array < string >;
 
 interface ToggleFilterProps {
     className?: string;
-    items : ItemList;
     itemClassName?: string;
+    items : ItemList;
     onItemToggle : Function;
     selected : ItemList;
     style?: object;
@@ -57,7 +58,7 @@ ToggleFilterState > {
             .onItemToggle(selectedItems, filterableItems);
     }
 
-    // Create an object of provided filterable items
+    // Create an array of provided filterable items
     _getFilterableItems = (allItems : ItemList, selectedItems : ItemList) : FilterableList | null => {
         if (!allItems || allItems.length === 0) {
             return null;
@@ -67,6 +68,7 @@ ToggleFilterState > {
         allItems.forEach((i : string) => {
             filterable.push({
                 title: i,
+                value: i.split(' ').join('_').toLowerCase(),
                 isSelected: selectedItems.includes(i)
             });
         });
@@ -74,7 +76,6 @@ ToggleFilterState > {
         return filterable;
     }
 
-    // Toggle the isSelected state of an item
     _toggleItem = (index : number, item : FilterableItem) => {
         let filterableItems : FilterableList = this.state.filterableItems;
         if (!filterableItems) {
@@ -87,7 +88,6 @@ ToggleFilterState > {
 
     render() {
         let filterableItems : FilterableList = this.state.filterableItems;
-
         if (!filterableItems) {
             return null;
         }
@@ -100,17 +100,33 @@ ToggleFilterState > {
                 ? className
                 : ''}`}
                 style={style}>
-                {filterableItems.map((item : FilterableItem, index : number) => (
-                    <span
-                        key={index}
-                        className={`ToggleFilter__Item ${itemClassName
-                        ? itemClassName
-                        : ''} ${item.isSelected
-                            ? '--is-selected'
-                            : ''}`}
-                        onClick={() => this._toggleItem(index, item)}>{item.title}</span>
-                ))}
+                {filterableItems.map((item : FilterableItem, index : number) => (<FilterableItem
+                    key={index}
+                    item={item}
+                    itemClassName={itemClassName}
+                    onClick={() => this._toggleItem(index, item)}/>))}
             </section>
         );
     }
 }
+
+// FilterableItem component
+type FilterableItemProps = {
+    itemClassName: string | undefined;
+    item: FilterableItem;
+    onClick: any;
+}
+
+const FilterableItem = (props : FilterableItemProps) => {
+    let {item, itemClassName, onClick} = props;
+
+    return (
+        <span            
+            className={`ToggleFilter__Item ${item.value} ${itemClassName
+            ? itemClassName
+            : ''} ${item.isSelected
+                ? 'selected'
+                : ''}`}
+            onClick={onClick}>{item.title}</span>
+    );
+};

@@ -7,7 +7,7 @@ storiesOf('ToggleFilter', module).add('default', () => (
   <div>
     <h1>ToggleFilter</h1>
     <ToggleFilter
-      items={['Open', 'Resolved', 'Closed']}
+      items={['Open', 'Resolved', 'Closed', 'Waiting For Customer']}
       onItemToggle={(selectedItems, allItems) => {
       console.log('Selected items:', selectedItems);
     }}/>
@@ -16,7 +16,7 @@ storiesOf('ToggleFilter', module).add('default', () => (
   <div>
     <h1>ToggleFilter with preselected items</h1>
     <ToggleFilter
-      items={['Open', 'Resolved', 'Closed']}
+      items={['Open', 'Resolved', 'Closed', 'Waiting For Customer']}
       selected={['Open', 'Resolved']}
       onItemToggle={(selectedItems, allItems) => {
       console.log('Selected items:', selectedItems);

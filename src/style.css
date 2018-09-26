@@ -18,11 +18,11 @@
     cursor: pointer;
 }
 
-.ToggleFilter__Item.--is-selected {
+.ToggleFilter__Item.selected {
     background-color: green;
     color: #fff;
 }
 
-.ToggleFilter__Item.--is-selected:hover {
+.ToggleFilter__Item.selected:hover {
     background-color: #6bc76b;
 }
